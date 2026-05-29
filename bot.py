@@ -293,6 +293,10 @@ async def webhook(request: Request):
 async def health():
     """Endpoint de saúde para o Render (keep-alive)."""
     return {"status": "ok"}
+    
+@app.get("/")
+async def root():
+    return {"status": "ok"}
 
 async def setup_webhook():
     """Configura o webhook no Telegram ao iniciar o servidor."""
