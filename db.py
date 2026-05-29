@@ -71,12 +71,11 @@ def get_balance(telegram_id: int) -> float:
         response = supabase.table("user_balance") \
             .select("balance") \
             .eq("telegram_id", telegram_id) \
-            .maybe_single() \
+            .limit(1) \
             .execute()
-        
-        # Verifica se response não é None e se existe dados
+
         if response and response.data:
-            return float(response.data["balance"])
+            return float(response.data[0]["balance"])
         return 0.0
     except Exception as e:
         print(f"Erro ao buscar saldo: {e}")
@@ -86,7 +85,7 @@ def set_balance(telegram_id: int, new_balance: float) -> bool:
     """Define o saldo do usuário. Se não existir, insere."""
     try:
         data = {"telegram_id": telegram_id, "balance": new_balance}
-        response = supabase.table("user_balance").upsert(data).execute()
+        response = supabase.table("user_balance").upsert(data, on_conflict="telegram_id").execute()
         return response is not None and len(response.data) > 0
     except Exception as e:
         print(f"Erro ao definir saldo: {e}")

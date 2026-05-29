@@ -253,6 +253,10 @@ async def summary_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif query.data == "summary_month":
         await summary_month(update, context)
         await query.delete_message()
+async def cancel_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text("Operação cancelada.")
 
 # ==================== CONFIGURAÇÃO DO BOT E WEBHOOK ====================
 
@@ -298,6 +302,7 @@ async def setup_webhook():
 
 @app.on_event("startup")
 async def startup_event():
+    await application.initialize()
     """Executado quando o FastAPI inicia no Render."""
     await setup_webhook()
     logger.info("Bot rodando com webhook!")
